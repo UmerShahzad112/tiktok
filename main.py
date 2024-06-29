@@ -1,26 +1,17 @@
 import streamlit as st
+import os, sys
+
+@st.experimental_singleton
+def installff():
+  os.system('sbase install geckodriver')
+  os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
+
+_ = installff()
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-import chromedriver_autoinstaller
+from selenium.webdriver import FirefoxOptions
+opts = FirefoxOptions()
+opts.add_argument("--headless")
+browser = webdriver.Firefox(options=opts)
 
-# Install ChromeDriver
-chromedriver_autoinstaller.install()
-
-# Set up Selenium WebDriver
-options = webdriver.ChromeOptions()
-options.add_argument('--headless')
-options.add_argument('--no-sandbox')
-options.add_argument('--disable-dev-shm-usage')
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-
-# Streamlit app
-st.title("Selenium with Streamlit")
-st.write("This is a Streamlit app using Selenium.")
-
-# Example Selenium interaction
-driver.get("https://www.google.com/")
-title = driver.title
-st.write(f"Title of the page: {title}")
-
-driver.quit()
+browser.get('http://example.com')
+st.write(browser.page_source)
